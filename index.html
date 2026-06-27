@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full select-none overflow-x-hidden m-0 p-0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Ostortiii! ❤️</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: #0c0a09;
+            color: #f5f5f4;
+            overflow: hidden;
+        }
+
+        .serif-gradient {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #ffffff 40%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Fluid Aurora Gradient Core */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            background: #0c0a09;
+            overflow: hidden;
+        }
+
+        .aurora-layer {
+            position: absolute;
+            width: 160%;
+            height: 160%;
+            top: -30%;
+            left: -30%;
+            background: 
+                radial-gradient(circle at 15% 25%, hsla(333, 70%, 55%, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 85% 15%, hsla(282, 82%, 54%, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 35% 85%, hsla(210, 89%, 60%, 0.3) 0%, transparent 45%),
+                radial-gradient(circle at 75% 75%, hsla(35, 90%, 60%, 0.3) 0%, transparent 40%);
+            filter: blur(80px);
+            animation: aurora-breathing 22s ease-in-out infinite alternate;
+        }
+
+        @keyframes aurora-breathing {
+            0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+            50% { transform: translate(60px, -40px) rotate(3deg) scale(1.08); }
+            100% { transform: translate(-40px, 50px) rotate(-3deg) scale(0.95); }
+        }
+
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Refined Ultra-Modern Glassmorphism Card System */
+        .glass-card {
+            background: rgba(12, 10, 9, 0.45);
+            backdrop-filter: blur(24px) saturate(130%);
+            -webkit-backdrop-filter: blur(24px) saturate(130%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 
+                        inset 0 1px 0px rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-progress-container {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Kinetic Glowing Pill Buttons */
+        .btn-modern-glow {
+            background: linear-gradient(135deg, #ec4899 0%, #ef4444 100%);
+            box-shadow: 0 4px 25px rgba(236, 72, 153, 0.25), 
+                        inset 0 1px 1px rgba(255, 255, 255, 0.3);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+        }
+        .btn-modern-glow:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 12px 35px rgba(236, 72, 153, 0.55),
+                        inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+        .btn-modern-glow:active {
+            transform: scale(0.97) translateY(-1px);
+        }
+
+        /* 3D Cursor Parallax Polaroid Layout */
+        .polaroid-wrapper {
+            perspective: 1200px;
+        }
+        .polaroid-body {
+            background: #ffffff;
+            padding: 16px 16px 40px 16px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            transform: rotate(-2deg);
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            transform-style: preserve-3d;
+        }
+        .polaroid-body img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            filter: contrast(102%) brightness(98%);
+        }
+
+        /* Navigation Node States */
+        .step-node {
+            display: none;
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+        }
+        .step-node.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col items-center justify-center relative px-4">
+
+    <div class="aurora-bg">
+        <div class="aurora-layer"></div>
+    </div>
+    <canvas id="three-canvas"></canvas>
+
+    <div class="fixed top-8 left-1/2 -translate-x-1/2 w-52 h-3 glass-progress-container rounded-full z-50 overflow-hidden p-[2px]">
+        <div id="progress-bar" class="h-full rounded-full btn-modern-glow w-[20%]" style="transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+    </div>
+
+    <main class="w-full max-w-xl z-30 relative min-h-[500px] flex items-center justify-center py-12">
+
+        <div id="step-1" class="step-node active w-full glass-card rounded-3xl p-8 text-center md:p-12">
+            <div class="inline-block text-6xl mb-6 animate-pulse" style="animation-duration: 2s;">❤️</div>
+            <h1 class="serif-gradient text-4xl md:text-5xl font-black tracking-tight mb-4">Halloooo Ostortiii,</h1>
+            <p class="text-stone-300 text-lg leading-relaxed mb-8 font-medium">I built a little world for you, just to bring a smile to your face on your special day.</p>
+            <button onclick="changeStep(2)" class="btn-modern-glow px-8 py-4 rounded-full text-white font-bold tracking-wider cursor-pointer text-xs uppercase">Jm3i chtaytk w YALAAH</button>
+        </div>
+
+        <div id="step-2" class="step-node w-full glass-card rounded-3xl p-8 text-center md:p-12">
+            <div class="inline-block text-6xl mb-6 animate-bounce" style="animation-duration: 2.5s;">🎉</div>
+            <h2 class="serif-gradient text-4xl md:text-5xl font-black tracking-tight mb-4">Happy Birthday!</h2>
+            <p class="text-stone-300 text-base md:text-lg leading-relaxed mb-8 font-medium">Before you start, I just wanted to remind you that you're one of the most amazing people I know, and I'm really grateful to have you in my life. I made this just for you, so I hope it makes you smile.</p>
+            <button onclick="changeStep(3)" class="btn-modern-glow px-8 py-4 rounded-full text-white font-bold tracking-wider cursor-pointer text-xs uppercase">NEXTT...</button>
+        </div>
+
+        <div id="step-3" class="step-node w-full glass-card rounded-3xl p-6 text-center md:p-10 max-w-2xl">
+            <h2 class="serif-gradient text-3xl font-black tracking-tight mb-6">A Few Things I Adore About You</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-8">
+                <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.05] md:col-span-2 shadow-inner">
+                    <h3 class="text-pink-400 font-bold mb-1.5 text-base flex items-center gap-1.5">📏 Pocket Sized (dial n7tk f jib)</h3>
+                    <p class="text-stone-300 text-sm leading-relaxed font-medium">I still can't believe someone your height has the confidence to argue with me. It's honestly impressive..</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.05] shadow-inner">
+                    <h3 class="text-pink-400 font-bold mb-1.5 text-base flex items-center gap-1.5">🍋 malikat l7moda</h3>
+                    <p class="text-stone-300 text-sm leading-relaxed font-medium">Your jokes are so bad they've become part of your charm. At this point, I'd actually miss them if they were good..</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.05] md:col-span-2 shadow-inner">
+                    <h3 class="text-pink-400 font-bold mb-1.5 text-base flex items-center gap-1.5">👺 My Favorite Human</h3>
+                    <p class="text-stone-300 text-sm leading-relaxed font-medium">Out of the 8 billion people on Earth, you're somehow my favorite. Don't let it get to your head though.</p>
+                </div>
+            </div>
+
+            <button onclick="changeStep(4)" class="btn-modern-glow px-8 py-4 rounded-full text-white font-bold tracking-wider cursor-pointer text-xs uppercase">Once upon a time...</button>
+        </div>
+
+        <div id="step-4" class="step-node w-full glass-card rounded-3xl p-6 text-center md:p-10">
+            <h2 class="serif-gradient text-2xl md:text-3xl font-black tracking-tight mb-6 leading-snug">Yamat kna nmchiw l7anota w flipoo w nti fl 2rd dima (5ria z3ma)...</h2>
+            
+            <div class="polaroid-wrapper w-full flex justify-center mb-6" id="interactive-polaroid">
+                <div class="polaroid-body w-64 cursor-grab active:cursor-grabbing">
+                    <img src="https://i.postimg.cc/XJS2mGVm/Whats-App-Image-2026-06-27-at-01-37-00.jpg" alt="Shared Special Memory" draggable="false">
+                    <p class="text-stone-800 font-semibold text-center mt-4 tracking-wide leading-tight" style="font-family: 'Playfair Display', serif; font-size: 14px;">chooo ch7al ghziwla had lfniwna (a7m ma3lina nkmlo db).</p>
+                </div>
+            </div>
+
+            <p class="text-stone-300 text-sm leading-relaxed mb-8 font-medium max-w-sm mx-auto">I hope we can live this again and asap, because every moment with you feels like a scene from a movie I'd watch on repeat (KDOB HADCHI KAMLO GHA 5OD3AA) </p>
+            <button onclick="changeStep(5)" class="btn-modern-glow px-8 py-4 rounded-full text-white font-bold tracking-wider cursor-pointer text-xs uppercase">One last thing...</button>
+        </div>
+
+        <div id="step-5" class="step-node w-full glass-card rounded-3xl p-6 text-center md:p-10 max-w-xl">
+            <div class="inline-block text-6xl mb-4">🎂</div>
+            <h2 class="serif-gradient text-2xl md:text-3xl font-black tracking-tight mb-4">A5IRAN WA LAYSA A5IIIRAN!!!!</h2>
+            <div class="text-stone-300 text-sm md:text-base leading-relaxed mb-8 font-medium space-y-4 max-h-64 overflow-y-auto pr-2 text-left bg-stone-950/20 p-4 rounded-xl border border-white/5">
+                <p>Happy Birthday to my favorite girl on Earth❤️</p>
+                <p>I hope this year brings you as much happiness as you've brought into my life (which is a lot, so the universe has some work to do). Keep being your amazing, kind, stubborn, funny EVEN IF YOUR JOKES ARENT, tiny self. Never stop being the person who can make my day better without even trying.</p>
+                <p>Thank you for being you. I wouldn't trade you for anyone although I might trade you for a box of milfaya every now and then 😭</p>
+                <p>Happy Birthday. I hope this year is everything you've been wishing for. You deserve it more than you know..</p>
+            </div>
+            
+            <div id="finale-reveal-container" class="h-0 opacity-0 mb-0 overflow-hidden transition-all duration-1000 ease-out">
+                <h3 class="serif-gradient text-2xl md:text-3xl font-black tracking-wide py-5">Happy Birthday mariatii 7abibatiii ghazalatii! ❤️</h3>
+            </div>
+
+            <button id="celebrate-btn" onclick="executeGrandFinale()" class="btn-modern-glow px-10 py-4 rounded-full text-white font-black tracking-widest cursor-pointer text-xs uppercase">LEZGOOOO!!!</button>
+        </div>
+
+     </main>
+
+    <script>
+        let stepPointer = 1;
+        const metricsMaxSteps = 5;
+
+        // Entry Animation Node Chain
+        window.addEventListener('DOMContentLoaded', () => {
+            gsap.to("#step-1", { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "power4.out" });
+            gsap.fromTo("#step-1 > *", { opacity: 0, y: 20 }, { opacity: 1, y: 0, stagger: 0.12, duration: 0.8, ease: "power3.out", delay: 0.15 });
+        });
+
+        // Stage Change Navigation Core
+        function changeStep(targetStepIndex) {
+            const currentElement = document.getElementById(`step-${stepPointer}`);
+            const nextElement = document.getElementById(`step-${targetStepIndex}`);
+            
+            stepPointer = targetStepIndex;
+            const percentageValue = (stepPointer / metricsMaxSteps) * 100;
+            document.getElementById('progress-bar').style.width = `${percentageValue}%`;
+
+            gsap.to(currentElement, {
+                opacity: 0,
+                y: -40,
+                scale: 0.94,
+                duration: 0.4,
+                ease: "power3.inOut",
+                onComplete: () => {
+                    currentElement.classList.remove('active');
+                    nextElement.classList.add('active');
+                    
+                    gsap.fromTo(nextElement, 
+                        { opacity: 0, y: 40, scale: 0.94 },
+                        { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power4.out" }
+                    );
+
+                    const interactiveElements = nextElement.querySelectorAll('> *');
+                    if(interactiveElements.length > 0) {
+                        gsap.fromTo(interactiveElements,
+                            { opacity: 0, y: 20 },
+                            { opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: "power3.out" }
+                        );
+                    }
+                }
+            });
+        }
+
+        // Polaroid Mouse Tracker
+        const polaroidComponent = document.getElementById('interactive-polaroid');
+        if(polaroidComponent) {
+            const targetFrame = polaroidComponent.querySelector('.polaroid-body');
+            polaroidComponent.addEventListener('mousemove', (event) => {
+                const boundBox = polaroidComponent.getBoundingClientRect();
+                const mouseOffsetX = event.clientX - boundBox.left - (boundBox.width / 2);
+                const mouseOffsetY = event.clientY - boundBox.top - (boundBox.height / 2);
+                
+                const matrixCalculationX = -(mouseOffsetY / boundBox.height) * 24;
+                const matrixCalculationY = (mouseOffsetX / boundBox.width) * 24;
+                
+                targetFrame.style.transform = `rotateX(${matrixCalculationX}deg) rotateY(${matrixCalculationY}deg) scale(1.05)`;
+            });
+
+            polaroidComponent.addEventListener('mouseleave', () => {
+                targetFrame.style.transform = `rotateX(0deg) rotateY(0deg) rotate(-2deg) scale(1)`;
+            });
+        }
+
+        /* --- THREE.JS 3D ENVIRONMENT --- */
+        const renderingCanvas = document.getElementById('three-canvas');
+        const webglScene = new THREE.Scene();
+        
+        const runtimeCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        runtimeCamera.position.z = 30;
+
+        const spaceRenderer = new THREE.WebGLRenderer({ canvas: renderingCanvas, alpha: true, antialias: true });
+        spaceRenderer.setSize(window.innerWidth, window.innerHeight);
+        spaceRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Procedural Mathematical Extruded Shape Engine for Volumetric Hearts
+        const vectorHeartShape = new THREE.Shape();
+        vectorHeartShape.moveTo( 25, 25 );
+        vectorHeartShape.bezierCurveTo( 25, 25, 20, 0, 0, 0 );
+        vectorHeartShape.bezierCurveTo( -30, 0, -30, 35,-30, 35 );
+        vectorHeartShape.bezierCurveTo( -30, 55, -10, 77, 25, 95 );
+        vectorHeartShape.bezierCurveTo( 60, 77, 80, 55, 80, 35 );
+        vectorHeartShape.bezierCurveTo( 80, 35, 80, 0, 50, 0 );
+        vectorHeartShape.bezierCurveTo( 35, 0, 25, 25, 25, 25 );
+
+        const extrusionConfiguration = { depth: 8, bevelEnabled: true, bevelSegments: 4, steps: 1, bevelSize: 2, bevelThickness: 3 };
+        const volumetricHeartGeometry = new THREE.ExtrudeGeometry(vectorHeartShape, extrusionConfiguration);
+        volumetricHeartGeometry.center();
+        volumetricHeartGeometry.scale(0.04, 0.04, 0.04);
+
+        // Standard Studio Lighting Setups
+        const lightingKeyDirectional = new THREE.DirectionalLight(0xffffff, 1.4);
+        lightingKeyDirectional.position.set(2, 3, 4);
+        webglScene.add(lightingKeyDirectional);
+
+        const lightingFillAmbient = new THREE.AmbientLight(0xffc0cb, 0.5);
+        webglScene.add(lightingFillAmbient);
+
+        const systemMeshAllocationCount = 24;
+        const systemRuntimeHeartPool = [];
+        const chromaticHexSpectrum = [0xff3354, 0xff5c7a, 0xff85a1, 0xe60067, 0x9d0200];
+
+        for(let index=0; index < systemMeshAllocationCount; index++) {
+            const indexSpectrumColor = chromaticHexSpectrum[Math.floor(Math.random() * chromaticHexSpectrum.length)];
+            const contextualMaterial = new THREE.MeshPhongMaterial({
+                color: indexSpectrumColor,
+                shininess: 90,
+                specular: 0xffffff
+            });
+            
+            const nodeMeshInstance = new THREE.Mesh(volumetricHeartGeometry, contextualMaterial);
+            
+            nodeMeshInstance.position.set(
+                (Math.random() - 0.5) * 60,
+                (Math.random() - 0.5) * 45,
+                (Math.random() - 0.5) * 15 - 5
+            );
+            
+            nodeMeshInstance.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+            
+            nodeMeshInstance.userData = {
+                velocityDriftY: 0.018 + Math.random() * 0.022,
+                velocitySineSpeed: 0.6 + Math.random() * 1.4,
+                sinePhaseOffset: Math.random() * 120,
+                rotationVelocityX: (Math.random() - 0.5) * 0.012,
+                rotationVelocityY: (Math.random() - 0.5) * 0.012,
+                uniqueScaleMultiplier: 0.6 + Math.random() * 0.6,
+                detonationEjected: false
+            };
+            
+            nodeMeshInstance.scale.set(nodeMeshInstance.userData.uniqueScaleMultiplier, nodeMeshInstance.userData.uniqueScaleMultiplier, nodeMeshInstance.userData.uniqueScaleMultiplier);
+            webglScene.add(nodeMeshInstance);
+            systemRuntimeHeartPool.push(nodeMeshInstance);
+        }
+
+        let macroFinaleStateLock = false;
+        const structuralClock = new THREE.Clock();
+
+        function operationalRenderLoop() {
+            requestAnimationFrame(operationalRenderLoop);
+            const runtimeDeltaTotal = structuralClock.getElapsedTime();
+
+            systemRuntimeHeartPool.forEach(meshNode => {
+                if (!macroFinaleStateLock) {
+                    meshNode.position.y += meshNode.userData.velocityDriftY;
+                    meshNode.position.x += Math.sin(runtimeDeltaTotal * meshNode.userData.velocitySineSpeed + meshNode.userData.sinePhaseOffset) * 0.012;
+                    
+                    meshNode.rotation.x += meshNode.userData.rotationVelocityX;
+                    meshNode.rotation.y += meshNode.userData.rotationVelocityY;
+
+                    if(meshNode.position.y > 24) {
+                        meshNode.position.y = -24;
+                        meshNode.position.x = (Math.random() - 0.5) * 60;
+                    }
+                } else {
+                    if(!meshNode.userData.detonationEjected) {
+                        meshNode.userData.detonationEjected = true;
+                        
+                        const outwardVectorDirectionX = (meshNode.position.x) * 0.15 + (Math.random() - 0.5) * 0.7;
+                        const verticalVectorDirectionY = Math.abs(meshNode.position.y) * 0.06 + 0.5 + Math.random() * 0.6;
+                        
+                        gsap.to(meshNode.position, {
+                            x: meshNode.position.x + outwardVectorDirectionX * 45,
+                            y: meshNode.position.y + verticalVectorDirectionY * 55,
+                            z: meshNode.position.z + 15,
+                            duration: 3.8,
+                            ease: "power3.in"
+                        });
+                        gsap.to(meshNode.rotation, {
+                            x: meshNode.rotation.x + 6,
+                            y: meshNode.rotation.y + 6,
+                            duration: 3.8
+                        });
+                        gsap.to(meshNode.scale, {
+                            x: 0, y: 0, z: 0,
+                            duration: 3.2,
+                            delay: 0.4,
+                            ease: "power3.in"
+                        });
+                    }
+                }
+            });
+
+            spaceRenderer.render(webglScene, runtimeCamera);
+        }
+        operationalRenderLoop();
+
+        window.addEventListener('resize', () => {
+            runtimeCamera.aspect = window.innerWidth / window.innerHeight;
+            runtimeCamera.updateProjectionMatrix();
+            spaceRenderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        /* --- THE GRAND FINALE INJECTOR SYSTEM --- */
+        function executeGrandFinale() {
+            macroFinaleStateLock = true;
+            
+            const celebrateInteractiveElement = document.getElementById('celebrate-btn');
+            celebrateInteractiveElement.disabled = true;
+            gsap.to(celebrateInteractiveElement, { scale: 0.85, opacity: 0, duration: 0.4, ease: "power2.inOut", onComplete: () => {
+                celebrateInteractiveElement.style.display = 'none';
+            }});
+
+            const layoutRevealDestination = document.getElementById('finale-reveal-container');
+            layoutRevealDestination.classList.remove('h-0', 'opacity-0');
+            gsap.fromTo(layoutRevealDestination, 
+                { height: 0, opacity: 0, y: 30 },
+                { height: "auto", opacity: 1, y: 0, duration: 1.4, ease: "elastic.out(1, 0.7)", delay: 0.15 }
+            );
+
+            // Confetti Lifespan Metrics
+            const executionDurationLimit = 5 * 1000;
+            const pointOfTerminationTimestamp = Date.now() + executionDurationLimit;
+            const genericConfettiRuleset = { startVelocity: 48, spread: 360, ticks: 120, zIndex: 1000 };
+
+            function dynamicClampingRange(minBound, maxBound) {
+                return Math.random() * (maxBound - minBound) + minBound;
+            }
+
+            // Fire Structural Corner Explosions
+            confetti({ ...genericConfettiRuleset, particleCount: 95, angle: 55, spread: 60, origin: { x: 0, y: 1 } });
+            confetti({ ...genericConfettiRuleset, particleCount: 95, angle: 125, spread: 60, origin: { x: 1, y: 1 } });
+
+            // Ongoing Stream Engine
+            const systemExecutionInterval = setInterval(function() {
+                const operationalRemainingTime = pointOfTerminationTimestamp - Date.now();
+
+                if (operationalRemainingTime <= 0) {
+                    return clearInterval(systemExecutionInterval);
+                }
+
+                const proportionalCount = 22 * (operationalRemainingTime / executionDurationLimit);
+                
+                confetti(Object.assign({}, genericConfettiRuleset, { 
+                    particleCount: proportionalCount, 
+                    origin: { x: dynamicClampingRange(0.15, 0.35), y: Math.random() - 0.2 },
+                    colors: ['#ec4899', '#ef4444', '#f472b6', '#ffffff']
+                }));
+                confetti(Object.assign({}, genericConfettiRuleset, { 
+                    particleCount: proportionalCount, 
+                    origin: { x: dynamicClampingRange(0.65, 0.85), y: Math.random() - 0.2 },
+                    colors: ['#ec4899', '#ef4444', '#f472b6', '#ffffff']
+                }));
+
+                // Micro Particle Emoji Injection Node Matrix
+                confetti({
+                    ...genericConfettiRuleset,
+                    particleCount: 4,
+                    scalar: 2.5,
+                    spread: 90,
+                    origin: { x: dynamicClampingRange(0.25, 0.75), y: 0.35 },
+                    shapes: ['text'],
+                    shapeOptions: {
+                        text: {
+                            value: ['❤️', '💖', '✨']
+                        }
+                    }
+                });
+            }, 220);
+        }
+    </script>
+</body>
+</html>
